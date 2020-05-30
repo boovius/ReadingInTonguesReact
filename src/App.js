@@ -6,6 +6,7 @@ const words = [
   {from: 'hablar', to: 'to speak'},
   {from: 'viejo', to: 'old'},
   {from: 'ganado', to: 'cattle'},
+  {from: '', to: ''},
 ];
 
 function App() {
