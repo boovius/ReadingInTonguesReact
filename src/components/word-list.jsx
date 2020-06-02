@@ -15,12 +15,12 @@ const WordsSection = styled.section`
   margin-top: 20px;
 `
 
-const WordList = ({words}) => (
+const WordList = ({words, updateWord}) => (
   <WordsSection>
     {
       words.map((word,i) => (
         <WordWrapper key={i}>
-          <Word word={word}/>
+          <Word word={word} updateWord={updateWord} index={i} />
         </WordWrapper>
       ))
     }

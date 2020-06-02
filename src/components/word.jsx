@@ -22,20 +22,16 @@ const WordBox = styled.div`
   }
 `
 
-const Word = ({word}) => {
+const Word = ({word, updateWord, index}) => {
   const [from, setFrom] = useState(word.from)
-  const [to, setTo] = useState(word.to)
+  //const [to, setTo] = useState(word.to)
 
   const handleInputChange = (from) => {
-    console.log('handling input change on', from)
     setFrom(from)
     translate(from)
   }
 
   const translate = debounce((from) => {
-    console.log('debouncing?')
-    console.log('translating: ', from)
-
     const data = {
       "from": from,
       "target": "en"
@@ -45,10 +41,10 @@ const Word = ({word}) => {
       .url("http://localhost:8080")
       .post(data)
       .json(response => {
-        console.log('response', response);
-        setTo(response.translations.join(', '));
+        updateWord(from, response.translations, index)
       })
       .catch(err => {
+        console.log('DO SOMETHING WITH ERROR HERE');
         console.log('error', err);
       });
   }, 1000)
@@ -59,7 +55,7 @@ const Word = ({word}) => {
         <input value={from} onChange={e => handleInputChange(e.target.value) }/>
       </div>
       <div>
-        {to}
+        {word.to}
       </div>
     </WordBox>
   )
