@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import wretch from 'wretch';
 import { debounce } from '../utils/debounce';
+import { TongueContext } from '../App';
 
 const WordBox = styled.div`
   display: flex;
@@ -23,31 +24,41 @@ const WordBox = styled.div`
 `
 
 const Word = ({word, updateWord, index}) => {
-  const [from, setFrom] = useState(word.from)
-  //const [to, setTo] = useState(word.to)
+  const [from, setFrom] = useState(word);
+  const [to, setTo] = useState('');
+  const targetTongue = useContext(TongueContext);
+
+  useEffect(() => {
+    translate()
+  }, [word, targetTongue])
 
   const handleInputChange = (from) => {
     setFrom(from)
-    translate(from)
+    debouncedUpdate()
   }
 
-  const translate = debounce((from) => {
+  const debouncedUpdate = debounce((from) => {
+    updateWord(from, index);
+  }, 2000)
+
+  const translate = () => {
+    console.log('translating');
     const data = {
       "from": from,
-      "target": "en"
+      "target": targetTongue
     }
 
     wretch()
       .url("http://localhost:8080")
       .post(data)
       .json(response => {
-        updateWord(from, response.translations, index)
+        setTo(response.translations.join(', '))
       })
       .catch(err => {
         console.log('DO SOMETHING WITH ERROR HERE');
         console.log('error', err);
       });
-  }, 1000)
+  }
 
   return (
     <WordBox>
@@ -55,7 +66,7 @@ const Word = ({word, updateWord, index}) => {
         <input value={from} onChange={e => handleInputChange(e.target.value) }/>
       </div>
       <div>
-        {word.to}
+        {to}
       </div>
     </WordBox>
   )
