@@ -34,7 +34,7 @@ const Word = ({word, updateWord, index}) => {
 
   const handleInputChange = (from) => {
     setFrom(from)
-    debouncedUpdate()
+    debouncedUpdate(from)
   }
 
   const debouncedUpdate = debounce((from) => {
