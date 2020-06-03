@@ -1,22 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, createContext } from 'react';
 import WordList from './components/word-list';
+import SelectTongue from './components/select-tongue';
+import tongueCodes from './tongue-codes.json'
 import './App.css';
 
 const wordsData = [
-  {from: 'hablar', to: 'to speak'},
-  {from: 'viejo', to: 'old'},
-  {from: 'ganado', to: 'cattle'},
-  {from: '', to: ''},
+  'hablar',
+  'viejo',
+  'ganado',
+  '',
 ];
+
+// set initial tongue to translate to english
+const initialTarget = 'en';
+
+export const TongueContext = createContext()
 
 function App() {
   const [words, setWords] = useState(wordsData);
 
-  const updateWord = (from, to, index) => {
-    const updatedWords = words.map((word, i) => index === i ? {from, to} : word)
+  const [targetTongue, setTargetTongue] = useState(initialTarget);
+
+  const updateWord = (updatedWord, index) => {
+    const updatedWords = words.map((word, i) => index === i ? updatedWord : word)
     if (index+1 === updatedWords.length) {
-      updatedWords.push({from: '', to: ''})
+      updatedWords.push('')
     }
+    console.log('updating words', updatedWords);
     setWords(updatedWords)
   }
 
@@ -25,7 +35,10 @@ function App() {
       <header className="App-header">
         Reading In Tongues
       </header>
-      <WordList words={words} updateWord={updateWord} />
+      <TongueContext.Provider value={targetTongue}>
+        <SelectTongue setTarget={setTargetTongue} tongueCodes={tongueCodes} initialTarget={initialTarget} />
+        <WordList words={words} updateWord={updateWord} />
+      </TongueContext.Provider>
     </div>
   );
 }
