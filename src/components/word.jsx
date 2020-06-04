@@ -44,7 +44,7 @@ const Word = ({word, updateWord, index}) => {
   const translate = () => {
     console.log('translating');
     const data = {
-      "from": from,
+      "word": from,
       "target": targetTongue
     }
 
